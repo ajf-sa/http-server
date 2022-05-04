@@ -5,6 +5,6 @@ import "net/http"
 func (s *server) Routers() {
 	http.HandleFunc("/", s.index)
 	http.HandleFunc("/about", s.about)
-	http.HandleFunc("/users", s.adminOnly(s.users))
+	http.HandleFunc("/users", s.loginOnly(s.adminOnly(s.users)))
 
 }
