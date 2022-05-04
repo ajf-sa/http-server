@@ -6,10 +6,17 @@ import (
 	"github.com/alufhigi/http-server/utils"
 )
 
+type Pagination struct {
+	Limit int         `json:"limit"`
+	Page  int         `json:"page"`
+	Sort  string      `json:"sort"`
+	Rows  interface{} `json:"rows"`
+}
+
 type User struct {
 	Id       int            `json:"id"`
 	Email    utils.Email    `json:"email"`
-	Password utils.Password `json:"password"`
+	Password utils.Password `json:"password,omitempty"`
 	Name     string         `json:"name"`
 }
 

@@ -56,6 +56,27 @@ func (r *DB) FindOneUserByEmail(e utils.Email) (*User, error) {
 	return u, nil
 }
 
+func (r *DB) FindAllUser(p *Pagination) ([]User, error) {
+	var users []User
+	sqlStmt := `select id,email,name from users order by id desc limit $1 offset $2`
+	rows, err := r.Db.Query(sqlStmt, p.Limit, p.Page)
+	if err != nil {
+		log.Printf("%q: %s\n", err, sqlStmt)
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var u User
+		err := rows.Scan(&u.Id, &u.Email, &u.Name)
+		if err != nil {
+			log.Printf("%q: %s\n", err, sqlStmt)
+			return nil, err
+		}
+		users = append(users, u)
+	}
+	return users, nil
+}
+
 func (r *DB) IsUser(e utils.Email) bool {
 	i := new(int)
 	sqlStmt := `select 1 from users where email = $1`
