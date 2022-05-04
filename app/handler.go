@@ -2,7 +2,6 @@ package app
 
 import (
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/alufhigi/http-server/db"
@@ -42,11 +41,17 @@ func (s *server) register(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		log.Println(user)
+
 		if err = user.Validate(); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		pss, er := user.Password.Hash()
+		if er != nil {
+			http.Error(w, er.Error(), http.StatusInternalServerError)
+			return
+		}
+		user.Password = pss
 		err = s.Db.CreateUser(user)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
