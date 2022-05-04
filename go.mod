@@ -1,4 +1,4 @@
-module github.com/alufhigi/netServer
+module github.com/alufhigi/http-server
 
 go 1.18
 
