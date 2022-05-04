@@ -3,7 +3,7 @@ package app
 import (
 	"net/http"
 
-	"github.com/alufhigi/netServer/db"
+	"github.com/alufhigi/http-server/db"
 )
 
 type server struct {
