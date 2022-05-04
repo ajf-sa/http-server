@@ -13,7 +13,7 @@ type User struct {
 	Name     string         `json:"name"`
 }
 
-func (u *User) UmarshalJSON(data []byte) error {
+func (u *User) UnmarshalJSON(data []byte) error {
 	type user User
 	var u2 user
 	if err := json.Unmarshal(data, &u2); err != nil {

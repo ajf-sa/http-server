@@ -37,7 +37,7 @@ func (s *server) register(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		user := new(db.User)
-		err = user.UmarshalJSON(body)
+		err = user.UnmarshalJSON(body)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
