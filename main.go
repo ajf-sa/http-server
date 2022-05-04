@@ -3,10 +3,11 @@ package main
 import (
 	"github.com/alufhigi/netServer/app"
 	"github.com/alufhigi/netServer/db"
+	"github.com/alufhigi/netServer/utils"
 )
 
 func main() {
-	db, err := db.New("sqlite3", "./app.db")
+	db, err := db.New("sqlite3", utils.Config("DB_PATH"))
 	if err != nil {
 		panic(err)
 	}
