@@ -1,6 +1,8 @@
 package app
 
-import "net/http"
+import (
+	"net/http"
+)
 
 func (s *server) adminOnly(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -27,6 +29,7 @@ func (s *server) isAdmin(r *http.Request) bool {
 	if !ok || len(user[0]) < 1 {
 		return false
 	}
+	//TODO check user is admin
 	return user[0] == "admin"
 
 }
@@ -37,6 +40,15 @@ func (s *server) isLogin(r *http.Request) bool {
 		return false
 	}
 	token[0] = token[0][7:]
+	//TODO check token is valid
 	return token[0] == "1234"
+
+}
+
+func (s *server) notFound(w http.ResponseWriter, r *http.Request, status int) {
+	w.WriteHeader(status)
+	if status == http.StatusNotFound {
+		w.Write([]byte("404 - Page not found"))
+	}
 
 }

@@ -1,10 +1,9 @@
 package app
 
-import "net/http"
-
 func (s *server) Routers() {
-	http.HandleFunc("/", s.index)
-	http.HandleFunc("/about", s.about)
-	http.HandleFunc("/users", s.loginOnly(s.adminOnly(s.users)))
 
+	s.router.HandleFunc("/about", s.about)
+	s.router.HandleFunc("/register", s.register)
+	s.router.HandleFunc("/users", s.loginOnly(s.adminOnly(s.users)))
+	s.router.HandleFunc("/", s.index)
 }

@@ -1,8 +1,12 @@
 package app
 
-type server struct {
-	Db *DB
-}
+import (
+	"net/http"
 
-type DB struct {
+	"github.com/alufhigi/netServer/db"
+)
+
+type server struct {
+	Db     *db.DB
+	router http.ServeMux
 }
