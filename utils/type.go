@@ -47,3 +47,12 @@ func (p *Password) Validate() error {
 	}
 	return nil
 }
+
+func (p *Password) Hash() (Password, error) {
+	bytes, err := HashPassword(string(*p))
+	return Password(bytes), err
+}
+
+func (p *Password) Check(password string) bool {
+	return CheckPasswordHash(string(*p), password)
+}
