@@ -1,8 +1,10 @@
 package app
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/alufhigi/http-server/db"
 )
@@ -24,7 +26,32 @@ func (s *server) about(w http.ResponseWriter, r *http.Request) {
 func (s *server) users(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte("Users"))
+	p := new(db.Pagination)
+	limit, ok := r.URL.Query()["limit"]
+	if ok {
+		p.Limit, _ = strconv.Atoi(limit[0])
+	} else {
+		p.Limit = 10
+	}
+
+	page, ok := r.URL.Query()["page"]
+	if ok {
+		pp, _ := strconv.Atoi(page[0])
+		if pp <= 1 {
+			p.Page = 0
+		} else {
+			p.Page = pp - 1
+		}
+	} else {
+		p.Page = 0
+	}
+	u, err := s.Db.FindAllUser(p)
+	if err != nil {
+		w.Write([]byte(err.Error()))
+		return
+	}
+	b, _ := json.Marshal(u)
+	w.Write([]byte(b))
 }
 func (s *server) register(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
