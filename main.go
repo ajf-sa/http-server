@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/alufhigi/netServer/app"
-	"github.com/alufhigi/netServer/db"
-	"github.com/alufhigi/netServer/utils"
+	"github.com/alufhigi/http-server/app"
+	"github.com/alufhigi/http-server/db"
+	"github.com/alufhigi/http-server/utils"
 )
 
 func main() {
