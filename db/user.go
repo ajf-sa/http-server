@@ -13,7 +13,8 @@ func (r *DB) CreateTableUser() error {
 			id INTEGER PRIMARY KEY,
 			email TEXT NOT NULL,
 			password TEXT NOT NULL,
-			name TEXT NOT NULL
+			name TEXT NOT NULL,
+			is_admin BOOLEAN NOT NULL DEFAULT FALSE
 		)
 	`)
 	if err != nil {
@@ -35,8 +36,9 @@ func (r *DB) CreateUser(u *User) error {
 }
 func (r *DB) FindOneUserByID(id int) (*User, error) {
 	var u User
-	sqlStmt := `SELECT id,email,password,name FROM users WHERE id=$1`
-	err := r.Db.QueryRow(sqlStmt, id).Scan(&u.Id, &u.Email, &u.Password, &u.Name)
+
+	sqlStmt := `SELECT id,email,password,name,is_admin FROM users WHERE id=$1`
+	err := r.Db.QueryRow(sqlStmt, id).Scan(&u.ID, &u.Email, &u.Password, &u.Name, &u.IsAdmin)
 	if err != nil {
 		log.Printf("%q: %s\n", err, sqlStmt)
 		return nil, err
@@ -46,9 +48,9 @@ func (r *DB) FindOneUserByID(id int) (*User, error) {
 
 func (r *DB) FindOneUserByEmail(e utils.Email) (*User, error) {
 	u := new(User)
-	sqlStmt := `select id,email,password,name from users where email = $1`
+	sqlStmt := `select id,email,password,name,is_admin from users where email = $1`
 	row := r.Db.QueryRow(sqlStmt, e)
-	err := row.Scan(&u.Id, &u.Email, &u.Password, &u.Name)
+	err := row.Scan(&u.ID, &u.Email, &u.Password, &u.Name, &u.IsAdmin)
 	if err != nil {
 		log.Printf("%q: %s\n", err, sqlStmt)
 		return nil, err
@@ -58,7 +60,7 @@ func (r *DB) FindOneUserByEmail(e utils.Email) (*User, error) {
 
 func (r *DB) FindAllUser(p *Pagination) ([]User, error) {
 	var users []User
-	sqlStmt := `select id,email,name from users order by id desc limit $1 offset $2`
+	sqlStmt := `select id,email,name,is_admin from users order by id desc limit $1 offset $2`
 	rows, err := r.Db.Query(sqlStmt, p.Limit, p.Page)
 	if err != nil {
 		log.Printf("%q: %s\n", err, sqlStmt)
@@ -67,7 +69,7 @@ func (r *DB) FindAllUser(p *Pagination) ([]User, error) {
 	defer rows.Close()
 	for rows.Next() {
 		var u User
-		err := rows.Scan(&u.Id, &u.Email, &u.Name)
+		err := rows.Scan(&u.ID, &u.Email, &u.Name, &u.IsAdmin)
 		if err != nil {
 			log.Printf("%q: %s\n", err, sqlStmt)
 			return nil, err

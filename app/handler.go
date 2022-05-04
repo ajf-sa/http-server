@@ -3,10 +3,12 @@ package app
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/alufhigi/http-server/db"
+	"github.com/alufhigi/http-server/utils"
 )
 
 func (s *server) index(w http.ResponseWriter, r *http.Request) {
@@ -56,38 +58,70 @@ func (s *server) users(w http.ResponseWriter, r *http.Request) {
 func (s *server) register(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	if r.Method == "POST" {
-		body, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		user := new(db.User)
-		err = user.UnmarshalJSON(body)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
 
-		if err = user.Validate(); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		pss, er := user.Password.Hash()
-		if er != nil {
-			http.Error(w, er.Error(), http.StatusInternalServerError)
-			return
-		}
-		user.Password = pss
-		err = s.Db.CreateUser(user)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.Write([]byte("User Created"))
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	user := new(db.User)
+	err = user.UnmarshalJSON(body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err = user.Validate(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	pss, er := user.Password.Hash()
+	if er != nil {
+		http.Error(w, er.Error(), http.StatusInternalServerError)
+		return
+	}
+	user.Password = pss
+	err = s.Db.CreateUser(user)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Write([]byte("User Created"))
+	return
+
+}
+
+func (s *server) login(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	user := new(db.User)
+	err = user.UnmarshalJSON(body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	log.Println(user)
+	if err = user.Validate(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	u, err := s.Db.FindOneUserByEmail(user.Email)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if u.Password.Check(string(user.Password)) {
+		log.Println("Login Success")
+		token, _ := utils.CreateToken(u.ID)
+		b, _ := json.Marshal(token)
+		w.Write([]byte(b))
 		return
 
 	}
-	s.notFound(w, r, http.StatusNotFound)
-
+	w.Write([]byte("Login Failed"))
 }

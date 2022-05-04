@@ -14,10 +14,11 @@ type Pagination struct {
 }
 
 type User struct {
-	Id       int            `json:"id"`
+	ID       int            `json:"id"`
 	Email    utils.Email    `json:"email"`
 	Password utils.Password `json:"password,omitempty"`
 	Name     string         `json:"name"`
+	IsAdmin  bool           `json:"is_admin"`
 }
 
 func (u *User) UnmarshalJSON(data []byte) error {

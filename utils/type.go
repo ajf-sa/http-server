@@ -54,5 +54,5 @@ func (p *Password) Hash() (Password, error) {
 }
 
 func (p *Password) Check(password string) bool {
-	return CheckPasswordHash(string(*p), password)
+	return CheckPasswordHash(password, string(*p))
 }
