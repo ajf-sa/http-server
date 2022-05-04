@@ -1,11 +1,11 @@
 package app
 
 import (
-	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 
-	"github.com/alufhigi/netServer/db"
+	"github.com/alufhigi/http-server/db"
 )
 
 func (s *server) index(w http.ResponseWriter, r *http.Request) {
@@ -33,19 +33,24 @@ func (s *server) register(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		user := new(db.User)
-		err = json.Unmarshal(body, &user)
+		err = user.UmarshalJSON(body)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
-
+			return
+		}
+		log.Println(user)
+		if err = user.Validate(); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 		err = s.Db.CreateUser(user)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 		w.Write([]byte("User Created"))
 		return
