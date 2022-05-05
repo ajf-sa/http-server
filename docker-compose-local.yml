@@ -16,10 +16,8 @@ services:
     restart: always
     volumes:
       - ./app/public:/app/public
-    environment:
-      - DB_PATH=./app.db
-      - SECRET_JWT=weijfwoegihwoeiwoeifjwoehgwoeijo
-      - PORT=5555
+      - ./app/storage:/app/storage
+
 
 networks:
   default:
