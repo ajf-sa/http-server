@@ -5,15 +5,15 @@ import "log"
 func (r *DB) CreateTableClient() error {
 	_, err := r.Db.Exec(`
 		CREATE TABLE IF NOT EXISTS clients (
-			pk INTEGER auto_increment ,
-			uuid TEXT NOT NULL ,
+			pk INTEGER auto_increment UNIQUE ,
+			uuid TEXT NOT NULL UNIQUE ,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			updated_at TIMESTAMP ,
 			deleted_at TIMESTAMP ,
 			name TEXT NOT NULL,
 			user_uuid text NOT NULL,
-			CONSTRAINT pk_clients PRIMARY KEY (pk,uuid)
-			CONSTRAINT fk_column FOREIGN KEY (user_uuid) REFERENCES users(id)
+			PRIMARY KEY (pk,uuid,user_uuid) ,
+			FOREIGN KEY (user_uuid) REFERENCES users(id) ON UPDATE SET NULL ON DELETE SET NULL
 		)
 	`)
 	if err != nil {

@@ -11,8 +11,8 @@ import (
 func (r *DB) CreateTableUser() error {
 	_, err := r.Db.Exec(`
 		CREATE TABLE IF NOT EXISTS users (
-			pk INTEGER auto_increment ,
-			uuid TEXT NOT NULL ,
+			pk INTEGER auto_increment UNIQUE ,
+			uuid TEXT NOT NULL UNIQUE,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			updated_at TIMESTAMP ,
 			deleted_at TIMESTAMP ,
@@ -20,7 +20,7 @@ func (r *DB) CreateTableUser() error {
 			password TEXT NOT NULL,
 			name TEXT NOT NULL,
 			is_admin BOOLEAN NOT NULL DEFAULT FALSE,
-			CONSTRAINT pk_users PRIMARY KEY (pk,uuid)
+			PRIMARY KEY (pk,uuid)
 		)
 	`)
 	if err != nil {
@@ -68,7 +68,7 @@ func (r *DB) FindOneUserByEmail(e utils.Email) (*User, error) {
 func (r *DB) FindAllUser(p *Pagination) ([]User, error) {
 	var users []User
 
-	sqlStmt := `select uuid,email,name,is_admin from users order by pk desc limit $1 offset $2`
+	sqlStmt := `select uuid,email,name,is_admin,created_at from users order by pk desc limit $1 offset $2`
 	rows, err := r.Db.Query(sqlStmt, p.Limit, p.Page)
 	if err != nil {
 		log.Printf("%q: %s\n", err, sqlStmt)
@@ -77,7 +77,7 @@ func (r *DB) FindAllUser(p *Pagination) ([]User, error) {
 	defer rows.Close()
 	for rows.Next() {
 		var u User
-		err := rows.Scan(&u.UUID, &u.Email, &u.Name, &u.IsAdmin)
+		err := rows.Scan(&u.UUID, &u.Email, &u.Name, &u.IsAdmin, &u.Created_at)
 		if err != nil {
 			log.Printf("%q: %s\n", err, sqlStmt)
 			return nil, err
