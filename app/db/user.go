@@ -90,3 +90,52 @@ func (r *DB) IsUser(e utils.Email) bool {
 	}
 	return true
 }
+
+func (r *DB) DeleteUser(id int) error {
+	sqlStmt := `delete from users where id=$1`
+	_, err := r.Db.Exec(sqlStmt, id)
+	if err != nil {
+		log.Printf("%q: %s\n", err, sqlStmt)
+		return err
+	}
+	return nil
+}
+
+func (r *DB) UpdateUserEmail(id int, e utils.Email) error {
+	sqlStmt := `update users set email=$1 where id=$2`
+	_, err := r.Db.Exec(sqlStmt, e, id)
+	if err != nil {
+		log.Printf("%q: %s\n", err, sqlStmt)
+		return err
+	}
+	return nil
+}
+
+func (r *DB) UpdateUserName(u *User) error {
+	sqlStmt := `update users set name=$1 where id=$2`
+	_, err := r.Db.Exec(sqlStmt, u.Name, u.ID)
+	if err != nil {
+		log.Printf("%q: %s\n", err, sqlStmt)
+		return err
+	}
+	return nil
+}
+func (r *DB) UpdateUserPassword(u *User) error {
+	sqlStmt := `update users set password=$1 where id=$2`
+	_, err := r.Db.Exec(sqlStmt, u.Password, u.ID)
+	if err != nil {
+		log.Printf("%q: %s\n", err, sqlStmt)
+		return err
+	}
+	return nil
+}
+
+func (r *DB) UpdateUserAdmin(u *User) error {
+	sqlStmt := `update users set is_admin=$1 where id=$2`
+	_, err := r.Db.Exec(sqlStmt, u.IsAdmin, u.ID)
+	if err != nil {
+		log.Printf("%q: %s\n", err, sqlStmt)
+		return err
+	}
+	return nil
+}
