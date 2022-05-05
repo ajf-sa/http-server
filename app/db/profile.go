@@ -5,14 +5,14 @@ import "log"
 func (r *DB) CrateTableProfile() error {
 	_, err := r.Db.Exec(`
 		CREATE TABLE IF NOT EXISTS profiles (
-			pk INTEGER auto_increment ,
-			uuid TEXT NOT NULL,
+			pk INTEGER auto_increment UNIQUE ,
+			uuid TEXT NOT NULL UNIQUE,
 			user_uuid TEXT NOT NULL,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			updated_at TIMESTAMP ,
 			deleted_at TIMESTAMP,
-			CONSTRAINT pk_profiles PRIMARY KEY (pk,uuid)
-			CONSTRAINT fk_column FOREIGN KEY (user_uuid) REFERENCES users(uuid)
+			PRIMARY KEY (pk,uuid,user_uuid) ,
+			FOREIGN KEY (user_uuid) REFERENCES users(uuid)  ON UPDATE SET NULL ON DELETE SET NULL
 		)`)
 	if err != nil {
 		log.Printf("%s\n", err)

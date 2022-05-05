@@ -8,7 +8,7 @@ import (
 )
 
 type Base struct {
-	PK         int        `json:"pk"`
+	PK         int        `json:"pk,omitempty"`
 	UUID       string     `json:"uuid"`
 	Created_at time.Time  `json:"created_at"`
 	Updated_at time.Time  `json:"updated_at"`
