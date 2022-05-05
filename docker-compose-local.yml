@@ -2,7 +2,7 @@ version: "3.3"
 services:
    http-server-v1:
     build:
-      context: ./server
+      context: ./app
       dockerfile: Dockerfile
     pid: host
     networks:
@@ -15,7 +15,12 @@ services:
     hostname: http-server-v1 
     restart: always
     volumes:
-      - ./public:/server/public
+      - ./app/public:/app/public
+    environment:
+      - DB_PATH=./app.db
+      - SECRET_JWT=weijfwoegihwoeiwoeifjwoehgwoeijo
+      - PORT=5555
+
 networks:
   default:
     external:
