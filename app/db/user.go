@@ -11,7 +11,7 @@ import (
 func (r *DB) CreateTableUser() error {
 	_, err := r.Db.Exec(`
 		CREATE TABLE IF NOT EXISTS users (
-			pk INTEGER auto_increment UNIQUE ,
+			pk INTEGER AUTOINCREMENT UNIQUE ,
 			uuid TEXT NOT NULL UNIQUE,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			updated_at TIMESTAMP ,

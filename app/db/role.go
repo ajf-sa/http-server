@@ -3,7 +3,7 @@ package db
 func (r *DB) CreateTableRole() error {
 	_, err := r.Db.Exec(`
 		CREATE TABLE IF NOT EXISTS roles (
-			pk INTEGER auto_increment UNIQUE ,
+			pk INTEGER AUTOINCREMENT UNIQUE ,
 			uuid TEXT NOT NULL UNIQUE ,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			updated_at TIMESTAMP ,
@@ -22,7 +22,7 @@ func (r *DB) CreateTableRole() error {
 func (r *DB) CreateTAblePermission() error {
 	_, err := r.Db.Exec(`
 		CREATE TABLE IF NOT EXISTS permissions (
-			pk INTEGER auto_increment UNIQUE ,
+			pk INTEGER AUTOINCREMENT UNIQUE ,
 			uuid TEXT NOT NULL UNIQUE ,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			updated_at TIMESTAMP ,
@@ -41,7 +41,7 @@ func (r *DB) CreateTAblePermission() error {
 func (r *DB) CreateTableRolePermission() error {
 	_, err := r.Db.Exec(`
 		CREATE TABLE IF NOT EXISTS role_permissions (
-			pk INTEGER auto_increment UNIQUE ,
+			pk INTEGER AUTOINCREMENT UNIQUE ,
 			uuid TEXT NOT NULL UNIQUE ,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			updated_at TIMESTAMP ,

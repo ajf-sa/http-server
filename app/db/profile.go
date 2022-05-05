@@ -5,7 +5,7 @@ import "log"
 func (r *DB) CrateTableProfile() error {
 	_, err := r.Db.Exec(`
 		CREATE TABLE IF NOT EXISTS profiles (
-			pk INTEGER auto_increment UNIQUE ,
+			pk INTEGER AUTOINCREMENT UNIQUE ,
 			uuid TEXT NOT NULL UNIQUE,
 			user_uuid TEXT NOT NULL,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
