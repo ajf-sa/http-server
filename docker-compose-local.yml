@@ -16,7 +16,6 @@ services:
     restart: always
     volumes:
       - ./public:/server/public
-      
 networks:
   default:
     external:
