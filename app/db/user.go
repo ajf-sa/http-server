@@ -11,7 +11,7 @@ import (
 func (r *DB) CreateTableUser() error {
 	_, err := r.Db.Exec(`
 		CREATE TABLE IF NOT EXISTS users (
-			pk INTEGER AUTOINCREMENT UNIQUE ,
+			pk INTEGER  NOT NULL UNIQUE,
 			uuid TEXT NOT NULL UNIQUE,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			updated_at TIMESTAMP ,
@@ -33,7 +33,7 @@ func (r *DB) CreateUser(u *User) error {
 		return errors.New("User already exists")
 	}
 	u.UUID = uuid.New().String()
-	sqlStmt := `insert into users (uuid,email,password,name) values ($1,$2,$3,$4)`
+	sqlStmt := `insert into users (pk,uuid,email,password,name) values ((SELECT IFNULL(MAX(pk), 0) + 1 FROM users),$1,$2,$3,$4)`
 	_, err := r.Db.Exec(sqlStmt, u.UUID, u.Email, u.Password, u.Name)
 	if err != nil {
 		log.Printf("%q: %s\n", err, sqlStmt)

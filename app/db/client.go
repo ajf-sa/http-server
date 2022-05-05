@@ -5,7 +5,7 @@ import "log"
 func (r *DB) CreateTableClient() error {
 	_, err := r.Db.Exec(`
 		CREATE TABLE IF NOT EXISTS clients (
-			pk INTEGER AUTOINCREMENT UNIQUE ,
+			pk INTEGER   NOT NULL UNIQUE ,
 			uuid TEXT NOT NULL UNIQUE ,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			updated_at TIMESTAMP ,
