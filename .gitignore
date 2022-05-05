@@ -1,3 +1,4 @@
 *.db
+*.db-journal
 .env
 docker-compose.yml
