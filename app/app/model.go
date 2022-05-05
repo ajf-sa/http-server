@@ -6,7 +6,7 @@ import (
 	"github.com/alufhigi/http-server/db"
 )
 
-type server struct {
+type Server struct {
 	Db     *db.DB
-	router http.ServeMux
+	Router http.ServeMux
 }

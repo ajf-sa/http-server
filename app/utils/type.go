@@ -2,7 +2,6 @@ package utils
 
 import (
 	"errors"
-	"log"
 	"regexp"
 	"unicode"
 )
@@ -26,7 +25,7 @@ func (p *Password) Validate() error {
 		hasNumber  = false
 		hasSpecial = false
 	)
-	log.Println(len(*p))
+
 	if len(string(*p)) >= 7 {
 		hasMinLen = true
 	}

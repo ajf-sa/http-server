@@ -1,7 +1,5 @@
 package db
 
-import "log"
-
 func (r *DB) CreateTableClient() error {
 	_, err := r.Db.Exec(`
 		CREATE TABLE IF NOT EXISTS clients (
@@ -17,7 +15,7 @@ func (r *DB) CreateTableClient() error {
 		)
 	`)
 	if err != nil {
-		log.Printf("%s\n", err)
+		return err
 	}
 	return nil
 }
@@ -28,7 +26,7 @@ func (r *DB) CreateOneClient(client *Client) error {
 		VALUES ($1,$2,$3)
 	`, client.UUID, client.Name, client.UserUUID)
 	if err != nil {
-		log.Printf("%s\n", err)
+		return err
 	}
 	return nil
 }
@@ -39,7 +37,7 @@ func (r *DB) FindAllClient() ([]Client, error) {
 		SELECT pk,uuid,name,user_uuid FROM clients
 	`)
 	if err != nil {
-		log.Printf("%s\n", err)
+
 		return nil, err
 	}
 	defer rows.Close()
@@ -47,7 +45,7 @@ func (r *DB) FindAllClient() ([]Client, error) {
 		var client Client
 		err := rows.Scan(&client.PK, &client.UUID, &client.Name, &client.UserUUID)
 		if err != nil {
-			log.Printf("%s\n", err)
+
 			return nil, err
 		}
 		clients = append(clients, client)
@@ -60,7 +58,6 @@ func (r *DB) FindOneClientByID(uuid string) (*Client, error) {
 	sqlStmt := `SELECT pk,uuid,name,user_uuid FROM clients WHERE uuid=$1`
 	err := r.Db.QueryRow(sqlStmt, uuid).Scan(&client.PK, &client.UUID, &client.Name, &client.UserUUID)
 	if err != nil {
-		log.Printf("%q: %s\n", err, sqlStmt)
 		return nil, err
 	}
 	return &client, nil

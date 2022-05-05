@@ -11,21 +11,21 @@ import (
 	"github.com/alufhigi/http-server/utils"
 )
 
-func (s *server) index(w http.ResponseWriter, r *http.Request) {
+func (s *Server) Index(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
-		s.notFound(w, r, http.StatusNotFound)
+		s.NotFound(w, r, http.StatusNotFound)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte("index"))
 }
-func (s *server) about(w http.ResponseWriter, r *http.Request) {
+func (s *Server) About(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte("about"))
 }
-func (s *server) users(w http.ResponseWriter, r *http.Request) {
+func (s *Server) Users(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	p := new(db.Pagination)
@@ -55,7 +55,7 @@ func (s *server) users(w http.ResponseWriter, r *http.Request) {
 	b, _ := json.Marshal(u)
 	w.Write([]byte(b))
 }
-func (s *server) register(w http.ResponseWriter, r *http.Request) {
+func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 
@@ -91,7 +91,7 @@ func (s *server) register(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (s *server) login(w http.ResponseWriter, r *http.Request) {
+func (s *Server) Login(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	body, err := ioutil.ReadAll(r.Body)
@@ -105,7 +105,7 @@ func (s *server) login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	log.Println(user)
+
 	if err = user.Validate(); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
