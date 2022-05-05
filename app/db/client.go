@@ -1,0 +1,67 @@
+package db
+
+import "log"
+
+func (r *DB) CreateTableClient() error {
+	_, err := r.Db.Exec(`
+		CREATE TABLE IF NOT EXISTS clients (
+			pk INTEGER auto_increment ,
+			uuid TEXT NOT NULL ,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			updated_at TIMESTAMP ,
+			deleted_at TIMESTAMP ,
+			name TEXT NOT NULL,
+			user_uuid text NOT NULL,
+			CONSTRAINT pk_clients PRIMARY KEY (pk,uuid)
+			CONSTRAINT fk_column FOREIGN KEY (user_uuid) REFERENCES users(id)
+		)
+	`)
+	if err != nil {
+		log.Printf("%s\n", err)
+	}
+	return nil
+}
+
+func (r *DB) CreateOneClient(client *Client) error {
+	_, err := r.Db.Exec(`
+		INSERT INTO clients (uuid,name,user_uuid)
+		VALUES ($1,$2,$3)
+	`, client.UUID, client.Name, client.UserUUID)
+	if err != nil {
+		log.Printf("%s\n", err)
+	}
+	return nil
+}
+
+func (r *DB) FindAllClient() ([]Client, error) {
+	var clients []Client
+	rows, err := r.Db.Query(`
+		SELECT pk,uuid,name,user_uuid FROM clients
+	`)
+	if err != nil {
+		log.Printf("%s\n", err)
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var client Client
+		err := rows.Scan(&client.PK, &client.UUID, &client.Name, &client.UserUUID)
+		if err != nil {
+			log.Printf("%s\n", err)
+			return nil, err
+		}
+		clients = append(clients, client)
+	}
+	return clients, nil
+}
+
+func (r *DB) FindOneClientByID(uuid string) (*Client, error) {
+	var client Client
+	sqlStmt := `SELECT pk,uuid,name,user_uuid FROM clients WHERE uuid=$1`
+	err := r.Db.QueryRow(sqlStmt, uuid).Scan(&client.PK, &client.UUID, &client.Name, &client.UserUUID)
+	if err != nil {
+		log.Printf("%q: %s\n", err, sqlStmt)
+		return nil, err
+	}
+	return &client, nil
+}

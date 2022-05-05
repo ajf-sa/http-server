@@ -16,7 +16,22 @@ func New(driverName, dataSourceName string) (*DB, error) {
 		return nil, err
 	}
 	r := &DB{db}
+	_, err = db.Exec("PRAGMA foreign_keys=ON;")
+	if err != nil {
+		return nil, err
+	}
+	var enabled bool
+	err = db.QueryRow("PRAGMA foreign_keys;").Scan(&enabled)
+	if err != nil {
+		return nil, err
+	}
+
 	r.CreateTableUser()
+	r.CrateTableProfile()
+	r.CreateTableClient()
+	r.CreateTableRole()
+	r.CreateTAblePermission()
+	r.CreateTableRolePermission()
 
 	return r, nil
 }

@@ -76,7 +76,7 @@ func (s *server) isLogin(r *http.Request) (*db.User, bool) {
 	if err != nil {
 		return nil, false
 	}
-	id := int(userID)
+	id := userID
 	u, err := s.Db.FindOneUserByID(id)
 	if err != nil {
 		return nil, false
