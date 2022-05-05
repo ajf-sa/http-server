@@ -117,7 +117,7 @@ func (s *server) login(w http.ResponseWriter, r *http.Request) {
 	}
 	if u.Password.Check(string(user.Password)) {
 		log.Println("Login Success")
-		token, _ := utils.CreateToken(u.ID)
+		token, _ := utils.CreateToken(u.UUID)
 		b, _ := json.Marshal(token)
 		w.Write([]byte(b))
 		return
