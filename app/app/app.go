@@ -9,14 +9,14 @@ import (
 	"github.com/urfave/negroni"
 )
 
-func New(db *db.DB) *server {
-	return &server{Db: db}
+func New(db *db.DB) *Server {
+	return &Server{Db: db}
 }
 
-func (s *server) Run() {
+func (s *Server) Run() {
 	log.Println("Listening to " + utils.Config("PORT") + " ...")
 	n := negroni.Classic()
 	n.Use(negroni.NewStatic(http.Dir("/public")))
-	n.UseHandler(&s.router)
+	n.UseHandler(&s.Router)
 	http.ListenAndServe(":"+utils.Config("PORT"), n)
 }

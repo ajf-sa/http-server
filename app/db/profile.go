@@ -1,7 +1,5 @@
 package db
 
-import "log"
-
 func (r *DB) CrateTableProfile() error {
 	_, err := r.Db.Exec(`
 		CREATE TABLE IF NOT EXISTS profiles (
@@ -15,7 +13,7 @@ func (r *DB) CrateTableProfile() error {
 			FOREIGN KEY (user_uuid) REFERENCES users(uuid)  ON UPDATE SET NULL ON DELETE SET NULL
 		)`)
 	if err != nil {
-		log.Printf("%s\n", err)
+		return err
 	}
 	return nil
 }

@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"log"
 	"net/http"
 
 	"github.com/alufhigi/http-server/db"
@@ -18,13 +17,12 @@ func Chain(f http.HandlerFunc, middlewares ...Middleware) http.HandlerFunc {
 	return f
 }
 
-func (s *server) loginOnly() Middleware {
+func (s *Server) LoginOnly() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
-			u, ok := s.isLogin(r)
+			u, ok := s.IsLogin(r)
 			if !ok {
-				log.Println("Not logged in")
-				s.notFound(w, r, http.StatusForbidden)
+				s.NotFound(w, r, http.StatusForbidden)
 				return
 			}
 			req := r.WithContext(context.WithValue(r.Context(), "user", u))
@@ -35,15 +33,14 @@ func (s *server) loginOnly() Middleware {
 	}
 }
 
-func (s *server) adminOnly() Middleware {
+func (s *Server) AdminOnly() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			switch r.Context().Value("user").(type) {
 			case *db.User:
 				u := r.Context().Value("user").(*db.User)
 				if !u.IsAdmin {
-					log.Println("Not admin")
-					s.notFound(w, r, http.StatusForbidden)
+					s.NotFound(w, r, http.StatusForbidden)
 					return
 				}
 			}
@@ -53,7 +50,7 @@ func (s *server) adminOnly() Middleware {
 	}
 }
 
-func (s *server) method(m string) Middleware {
+func (s *Server) Method(m string) Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			if r.Method != m {
@@ -66,7 +63,7 @@ func (s *server) method(m string) Middleware {
 	}
 }
 
-func (s *server) isLogin(r *http.Request) (*db.User, bool) {
+func (s *Server) IsLogin(r *http.Request) (*db.User, bool) {
 	token, ok := r.Header["Authorization"]
 	if !ok || len(token[0]) < 1 {
 		return nil, false
@@ -85,7 +82,7 @@ func (s *server) isLogin(r *http.Request) (*db.User, bool) {
 
 }
 
-func (s *server) notFound(w http.ResponseWriter, r *http.Request, status int) {
+func (s *Server) NotFound(w http.ResponseWriter, r *http.Request, status int) {
 	w.WriteHeader(status)
 	if status == http.StatusNotFound {
 		w.Write([]byte("404 - Page not found"))

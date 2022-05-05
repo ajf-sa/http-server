@@ -1,9 +1,9 @@
 package app
 
-func (s *server) Routers() {
-	s.router.HandleFunc("/about", Chain(s.about, s.method("GET")))
-	s.router.HandleFunc("/register", Chain(s.register, s.method("POST")))
-	s.router.HandleFunc("/login", Chain(s.login, s.method("POST")))
-	s.router.HandleFunc("/users", Chain(s.users, s.method("GET"), s.adminOnly(), s.loginOnly()))
-	s.router.HandleFunc("/", Chain(s.index, s.method("GET")))
+func (s *Server) Routers() {
+	s.Router.HandleFunc("/about", Chain(s.About, s.Method("GET")))
+	s.Router.HandleFunc("/register", Chain(s.Register, s.Method("POST")))
+	s.Router.HandleFunc("/login", Chain(s.Login, s.Method("POST")))
+	s.Router.HandleFunc("/users", Chain(s.Users, s.Method("GET"), s.AdminOnly(), s.LoginOnly()))
+	s.Router.HandleFunc("/", Chain(s.Index, s.Method("GET")))
 }

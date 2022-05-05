@@ -36,7 +36,7 @@ func (r *DB) CreateUser(u *User) error {
 	sqlStmt := `insert into users (pk,uuid,email,password,name) values ((SELECT IFNULL(MAX(pk), 0) + 1 FROM users),$1,$2,$3,$4)`
 	_, err := r.Db.Exec(sqlStmt, u.UUID, u.Email, u.Password, u.Name)
 	if err != nil {
-		log.Printf("%q: %s\n", err, sqlStmt)
+
 		return err
 	}
 	return nil
@@ -47,7 +47,7 @@ func (r *DB) FindOneUserByID(uuid string) (*User, error) {
 	sqlStmt := `SELECT uuid,email,password,name,is_admin FROM users WHERE uuid=$1`
 	err := r.Db.QueryRow(sqlStmt, uuid).Scan(&u.UUID, &u.Email, &u.Password, &u.Name, &u.IsAdmin)
 	if err != nil {
-		log.Printf("%q: %s\n", err, sqlStmt)
+
 		return nil, err
 	}
 	return &u, nil
@@ -59,7 +59,7 @@ func (r *DB) FindOneUserByEmail(e utils.Email) (*User, error) {
 	row := r.Db.QueryRow(sqlStmt, e)
 	err := row.Scan(&u.UUID, &u.Email, &u.Password, &u.Name, &u.IsAdmin)
 	if err != nil {
-		log.Printf("%q: %s\n", err, sqlStmt)
+
 		return nil, err
 	}
 	return u, nil
@@ -71,7 +71,7 @@ func (r *DB) FindAllUser(p *Pagination) ([]User, error) {
 	sqlStmt := `select uuid,email,name,is_admin,created_at from users order by pk desc limit $1 offset $2`
 	rows, err := r.Db.Query(sqlStmt, p.Limit, p.Page)
 	if err != nil {
-		log.Printf("%q: %s\n", err, sqlStmt)
+
 		return nil, err
 	}
 	defer rows.Close()
@@ -79,7 +79,7 @@ func (r *DB) FindAllUser(p *Pagination) ([]User, error) {
 		var u User
 		err := rows.Scan(&u.UUID, &u.Email, &u.Name, &u.IsAdmin, &u.Created_at)
 		if err != nil {
-			log.Printf("%q: %s\n", err, sqlStmt)
+
 			return nil, err
 		}
 		users = append(users, u)
@@ -93,7 +93,6 @@ func (r *DB) IsUser(e utils.Email) bool {
 	row := r.Db.QueryRow(sqlStmt, e)
 	err := row.Scan(&i)
 	if err != nil {
-		log.Printf("%q: %s\n", err, sqlStmt)
 		return false
 	}
 	return true
@@ -103,7 +102,7 @@ func (r *DB) DeleteUser(uuid string) error {
 	sqlStmt := `delete from users where uuid=$1`
 	_, err := r.Db.Exec(sqlStmt, uuid)
 	if err != nil {
-		log.Printf("%q: %s\n", err, sqlStmt)
+
 		return err
 	}
 	return nil
@@ -113,7 +112,7 @@ func (r *DB) UpdateUserEmail(uuid string, e utils.Email) error {
 	sqlStmt := `update users set email=$1 where uuid=$2`
 	_, err := r.Db.Exec(sqlStmt, e, uuid)
 	if err != nil {
-		log.Printf("%q: %s\n", err, sqlStmt)
+
 		return err
 	}
 	return nil
@@ -123,7 +122,7 @@ func (r *DB) UpdateUserName(u *User) error {
 	sqlStmt := `update users set name=$1 where uuid=$2`
 	_, err := r.Db.Exec(sqlStmt, u.Name, u.UUID)
 	if err != nil {
-		log.Printf("%q: %s\n", err, sqlStmt)
+
 		return err
 	}
 	return nil
@@ -132,7 +131,7 @@ func (r *DB) UpdateUserPassword(u *User) error {
 	sqlStmt := `update users set password=$1 where uuid=$2`
 	_, err := r.Db.Exec(sqlStmt, u.Password, u.UUID)
 	if err != nil {
-		log.Printf("%q: %s\n", err, sqlStmt)
+
 		return err
 	}
 	return nil
@@ -142,7 +141,7 @@ func (r *DB) UpdateUserAdmin(u *User) error {
 	sqlStmt := `update users set is_admin=$1 where uuid=$2`
 	_, err := r.Db.Exec(sqlStmt, u.IsAdmin, u.UUID)
 	if err != nil {
-		log.Printf("%q: %s\n", err, sqlStmt)
+
 		return err
 	}
 	return nil
