@@ -24,6 +24,7 @@ func main() {
 		go func(v app.Config) {
 			app := Serve(v)
 			app.Run()
+			defer app.CloseDB()
 		}(v)
 	}
 	defer wg.Done()
