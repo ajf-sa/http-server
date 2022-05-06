@@ -9,20 +9,19 @@ import (
 	"testing"
 
 	"github.com/alufhigi/http-server/app"
-	"github.com/alufhigi/http-server/db"
 	"github.com/alufhigi/http-server/utils"
 	"github.com/google/uuid"
 )
 
 //go test -v -run  Test_App_Router -count=1
 func Test_App_Router(t *testing.T) {
-
-	db, err := db.New("sqlite3", utils.Config("DB_PATH"))
+	app, err := app.New(app.Config{
+		Port: utils.Config("PORT"),
+		DB:   utils.Config("DB_URL"),
+	})
 	if err != nil {
 		panic(err)
 	}
-	defer db.Db.Close()
-	app := app.New(db)
 	app.Routers()
 	// app.Run()
 	testHomePage(t, app)

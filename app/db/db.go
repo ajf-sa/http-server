@@ -10,8 +10,8 @@ type DB struct {
 	Db *sql.DB
 }
 
-func New(driverName, dataSourceName string) (*DB, error) {
-	db, err := sql.Open(driverName, dataSourceName)
+func New(dataSourceName string) (*DB, error) {
+	db, err := sql.Open("sqlite3", dataSourceName)
 	if err != nil {
 		return nil, err
 	}
