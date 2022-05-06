@@ -26,8 +26,7 @@ func (s *Server) About(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("about"))
 }
 func (s *Server) Users(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
+
 	p := new(db.Pagination)
 	limit, ok := r.URL.Query()["limit"]
 	if ok {
@@ -53,6 +52,8 @@ func (s *Server) Users(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	b, _ := json.Marshal(u)
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(b))
 }
 func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
