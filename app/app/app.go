@@ -19,8 +19,14 @@ func New(c Config) (*Server, error) {
 
 func (s *Server) Run() {
 	log.Println("Listening to " + s.Config.Port + " ...")
-	n := negroni.Classic()
+	n := negroni.New()
 	n.Use(negroni.NewStatic(http.Dir("/public")))
+	n.Use(negroni.NewRecovery())
+	n.Use(negroni.NewLogger())
 	n.UseHandler(&s.Router)
 	http.ListenAndServe(":"+s.Config.Port, n)
+}
+
+func (s *Server) CloseDB() {
+	s.Db.Db.Close()
 }
