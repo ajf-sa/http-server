@@ -9,4 +9,11 @@ import (
 type Server struct {
 	Db     *db.DB
 	Router http.ServeMux
+	Email  interface{}
+	Config Config
+}
+
+type Config struct {
+	Port string
+	DB   string
 }
