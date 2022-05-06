@@ -27,6 +27,7 @@ func (s *Server) LoginOnly() Middleware {
 			}
 			req := r.WithContext(context.WithValue(r.Context(), "user", u))
 			*r = *req
+			w.Header().Set("Content-Type", "application/json")
 			f(w, r)
 
 		}
