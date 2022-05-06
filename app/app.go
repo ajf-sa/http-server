@@ -1,23 +1,27 @@
 package main
 
 import (
+	"strings"
 	"sync"
 
 	"github.com/alufhigi/http-server/app"
+	"github.com/alufhigi/http-server/utils"
 )
 
 func main() {
 	var wg sync.WaitGroup
+	ports := strings.Split(utils.Config("PORT"), ",")
+	dbs := strings.Split(utils.Config("DB_PATH"), ",")
 	c := []app.Config{}
-	c = append(c, app.Config{Port: "5555", DB: "./storage/app.db"})
-	c = append(c, app.Config{Port: "5556", DB: "./storage/app1.db"})
-	c = append(c, app.Config{Port: "5557", DB: "./storage/app2.db"})
-	c = append(c, app.Config{Port: "5558", DB: "./storage/app3.db"})
-	c = append(c, app.Config{Port: "5559", DB: "./storage/app4.db"})
+	for i := 0; i < len(ports); i++ {
+		c = append(c, app.Config{
+			Port: ports[i],
+			DB:   "./storage/" + dbs[i],
+		})
+	}
 	for _, v := range c {
 		wg.Add(len(c))
 		go func(v app.Config) {
-
 			app := Serve(v)
 			app.Run()
 		}(v)
